@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -55,11 +56,20 @@ public class ParamAccessorTest {
     }
 
     @Test
-    void deserialize_object() throws JsonProcessingException {
+    void deserialize_class() throws JsonProcessingException {
         assertThat(asParamAccessor("{\"field1\": 11, \"field2\": \"value12\"}").getAsObject(SomeRecord.class), is(new SomeRecord(11, "value12")));
     }
 
-    
+    @Test
+    void deserialize_as_generic_primitive() throws JsonProcessingException {
+        assertThat(asParamAccessor("1").getAsObject(Object.class), is(1));
+    }
+
+    @Test
+    void deserialize_as_generic_object() throws JsonProcessingException {
+        assertThat(asParamAccessor("{\"field1\": 11, \"field2\": \"value12\"}").getAsObject(Object.class), is(Map.of("field1", 11, "field2", "value12")));
+    }
+
     // ~~~~~~~~~~~~~~~~~~ Helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
     private static ParamAccessor asParamAccessor(String number) throws JsonProcessingException {
