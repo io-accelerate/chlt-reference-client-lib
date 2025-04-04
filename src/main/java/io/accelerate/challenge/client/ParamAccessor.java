@@ -42,7 +42,7 @@ public class ParamAccessor {
         try {
             return objectMapper.treeToValue(jsonNode, new TypeReference<>() {});
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to deserialize jsonNode to List of " + classType.getName(), e);
+            throw new RuntimeException("Failed to deserialize jsonNode to Map of " + classType.getName(), e);
         }
     }
 
