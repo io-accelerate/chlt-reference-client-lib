@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import java.util.List;
+import java.util.Map;
 
 public class ParamAccessor {
     private final JsonNode jsonNode;
@@ -30,6 +31,14 @@ public class ParamAccessor {
     }
 
     public <T> List<T> getAsListOf(Class<T> classType) {
+        try {
+            return objectMapper.treeToValue(jsonNode, new TypeReference<>() {});
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to deserialize jsonNode to List of " + classType.getName(), e);
+        }
+    }
+
+    public <T> Map<String, T> getAsMapOf(Class<T> classType) {
         try {
             return objectMapper.treeToValue(jsonNode, new TypeReference<>() {});
         } catch (JsonProcessingException e) {

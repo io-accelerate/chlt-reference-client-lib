@@ -15,6 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ParamAccessorTest {
     
+    // ~~~~~~~~~~~~~~~~~~~~~  Primitives  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
     @Test
     void deserialize_integer() throws JsonProcessingException {
         assertThat(asParamAccessor("1").getAsInteger(), is(1));
@@ -35,6 +37,8 @@ public class ParamAccessorTest {
         assertThat(asParamAccessor("1").getAsString(), is("1"));
     }
     
+    // ~~~~~~~~~~~~~~~~~~~~~  Lists  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
     @Test
     void deserialize_list_of_int() throws JsonProcessingException {
         assertThat(asParamAccessor("[1, 2, 3]").getAsListOf(Integer.class), is(List.of(1, 2, 3)));
@@ -50,10 +54,28 @@ public class ParamAccessorTest {
         assertThrows(RuntimeException.class, () -> asParamAccessor("\"notAList\"").getAsListOf(Integer.class));
     }
 
+    // ~~~~~~~~~~~~~~~~~~~~~  Maps  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     @Test
-    void throws_exception_when_trying_to_deserialize_list_of_wrong_type()  {
-        assertThrows(RuntimeException.class, () -> asParamAccessor("\"notAList\"").getAsListOf(Integer.class));
+    void deserialize_map_of_int() throws JsonProcessingException {
+        assertThat(asParamAccessor("{\"key1\": 11, \"key2\": 22}").getAsMapOf(Integer.class), 
+                is(Map.of("key1", 11, "key2", 22)));
     }
+
+    @Test
+    void deserialize_map_of_string() throws JsonProcessingException {
+        assertThat(asParamAccessor("{\"key1\": \"text1\", \"key2\": \"text2\"}").getAsMapOf(String.class),
+                is(Map.of("key1", "text1", "key2", "text2")));
+    }
+
+    @Test
+    void throws_exception_when_trying_to_deserialize_invalid_map()  {
+        assertThrows(RuntimeException.class, () -> asParamAccessor("\"notAList\"").getAsMapOf(Integer.class));
+    }
+
+
+    // ~~~~~~~~~~~~~~~~~~~~~  Objects  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
 
     @Test
     void deserialize_class() throws JsonProcessingException {
